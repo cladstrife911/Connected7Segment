@@ -2,6 +2,8 @@
 #include <WiFiClient.h>
 #include <PubSubClient.h>
 
+#include "wifi_credential.h"
+
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
   #include <avr/power.h>
@@ -19,8 +21,8 @@ int bluePixel=DEFAULT_PIXEL_BRIGHTNESS;
 int redPixel=DEFAULT_PIXEL_BRIGHTNESS;
 int greenPixel=DEFAULT_PIXEL_BRIGHTNESS;
 
-const char* ssid = "YOUR_SSID";           
-const char* password = "YOUR_PASSWORD";
+const char* ssid = MY_SSID;           
+const char* password = MY_PASSWORD;
 
 const char* mqtt_server = "192.168.1.2";
 WiFiClient espClient;
