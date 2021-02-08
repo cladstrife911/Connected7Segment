@@ -2,23 +2,20 @@
 #include <WiFiClient.h>
 #include <PubSubClient.h>
 
+#include "SevenSegments.h"
+
 #include "wifi_credential.h"
 
-#include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
-  #include <avr/power.h>
-#endif
 #define PIN       15
 #define PIXEL_PER_SEGMENTS 2
 
-Adafruit_NeoPixel pixels(PIXEL_PER_SEGMENTS, PIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 1000
 
 #define DEFAULT_PIXEL_BRIGHTNESS 10
 #define NORMAL_PIXEL_BRIGHTNESS 80
 #define OFF_PIXEL_BRIGHTNESS 0
 int bluePixel=DEFAULT_PIXEL_BRIGHTNESS;
-int redPixel=DEFAULT_PIXEL_BRIGHTNESS;
+int redPixel=OFF_PIXEL_BRIGHTNESS;
 int greenPixel=DEFAULT_PIXEL_BRIGHTNESS;
 
 const char* ssid = MY_SSID;           
@@ -30,6 +27,8 @@ PubSubClient client(espClient);
 long lastMsg = 0;
 char msg[50];
 int value = 0;
+
+SevenSegments LOC_Seg=SevenSegments(PIXEL_PER_SEGMENTS, PIN);
 
 void setup() {
   Serial.begin(115200);
@@ -44,16 +43,17 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(mqttCallback);
 
-  pixels.begin();
+  Serial.print(  LOC_Seg.getNumber());
+  
+  LOC_Seg.begin();
 }
 
 void loop() {
-  pixels.clear();
+  LOC_Seg.clear();
   for(int i=0; i< PIXEL_PER_SEGMENTS; i++) {
     
-    pixels.setPixelColor(i, pixels.Color(redPixel, greenPixel, bluePixel));
+    LOC_Seg.setPixelColor(i, redPixel, greenPixel, bluePixel);
   }
-  pixels.show();
   delay(DELAYVAL);
 
   if (!client.connected()) {
